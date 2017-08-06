@@ -1,5 +1,6 @@
 /**
  * Created by qiujian on 7/18/17.
+ * 工程入口: node --harmony babel.app.js
  */
 require("babel-core/register")({
   "presets": [

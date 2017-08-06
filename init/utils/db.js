@@ -8,7 +8,7 @@ const pool = mysql.createPool({
   host: '127.0.0.1',
   user: 'tomatoDo',
   password: 'tomatoDo0846',
-  database: 'test'
+  database: 'tomatoDo'
 });
 
 let executeSql = function (sql, args) {
@@ -16,6 +16,10 @@ let executeSql = function (sql, args) {
     pool.getConnection(function (err, connection) {
       if(err) {
         reject(err);
+      }
+      if(!connection) {
+        console.log("sql connection is undefined, pls check mysql service!");
+        reject({});
       }
       connection.query(sql, args, (err, results) => {
         if (err) {

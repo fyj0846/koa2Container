@@ -31,6 +31,6 @@ function getSqlContentMap(path) {
 }
 
 // for test
-getSqlContentMap();
+// getSqlContentMap();
 
 module.exports = getSqlContentMap

@@ -1,8 +1,16 @@
 /**
  * Created by qiujian on 7/18/17.
  */
-//async function to render home.html page
-var user = null;
-module.exports.showHome = async (ctx) => {
-  await ctx.render('home');
-}
+
+/* koa2 静态资源服务路由配置 */
+
+import Router from 'koa-router';
+import fs from 'fs';
+
+const home = new Router();
+home.get('/', async (ctx)=> {
+  ctx.type = 'html'
+  ctx.body = fs.createReadStream('./public/index.html')
+})
+
+export default home;

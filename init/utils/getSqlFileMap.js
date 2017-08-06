@@ -9,7 +9,7 @@ const goThroughFiles = require('./goThroughFiles')
  * @return {object}
  */
 function getSqlMap (filePath) {
-  let basePath = filePath || __dirname + "/../sql/test";  // 默认sql相对于utils的路径
+  let basePath = filePath || __dirname + "/../sql/";  // 默认sql相对于utils的路径
   console.log("getSqlMap: " + basePath);
   basePath = basePath.replace(/\\/g, '\/');  // 兼容不同平台的文件分割符
 
@@ -19,6 +19,6 @@ function getSqlMap (filePath) {
 }
 
 // for test
-getSqlMap();
+// getSqlMap();
 
 module.exports = getSqlMap

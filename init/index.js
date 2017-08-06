@@ -1,9 +1,13 @@
 /**
+ * Created by qiujian on 8/1/17.
+ */
+/**
  * Created by qiujian on 7/22/17.
+ * 数据库初始化 入口文件: node --harmony index.js
  */
 const fs = require('fs');
-const getSqlContentMap = require('./getSqlContentMap');
-const {executeSql} = require('./db');
+const getSqlContentMap = require('./utils/getSqlContentMap');
+const {executeSql} = require('./utils/db');
 
 
 // 打印脚本执行日志
