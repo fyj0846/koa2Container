@@ -2,9 +2,11 @@
 import Koa from 'koa';
 import path from 'path';
 import serve from 'koa-static';
+import bodyParser from 'koa-bodyparser';
 import Router from 'koa-router';
 import home from './routes/homeRoutes';
-import apiRouter from './api/router';
+import apiRouter from './api/apiRouters';
+import restify from './middlewares/restify';
 
 // 初始化app对象
 var app = new Koa();
@@ -18,8 +20,15 @@ router.use('/api/V1', apiRouter.routes(), apiRouter.allowedMethods());
 
 // trust proxy
 app.proxy = true;
+
+// 请求解析
+app.use(bodyParser());
+
 // 静态资源解析
 app.use(serve(path.resolve()));
+
+// 统一的数据返回处理和异常处理
+app.use(restify());
 
 // 入口文件（指向VUE项目目录: ./public，入口文件: index）
 app.use(router.routes())
