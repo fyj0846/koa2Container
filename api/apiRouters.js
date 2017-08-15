@@ -7,7 +7,7 @@ const apiRouters = new Router();
 
 apiRouters
   .get('/todo/:userId/:todoId', todoCtrl.getTodoByTodoId)
-  .get('/todo/:userId', todoCtrl.getTodos)
+  .get('/todo/:userId', todoCtrl.getTodosByUserId)
 
   .post('/todo/:userId', todoCtrl.createTodo)
 export default apiRouters;
