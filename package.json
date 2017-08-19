@@ -4,7 +4,8 @@
   "description": "a koa2 simple container",
   "main": "app.js",
   "scripts": {
-    "start": "node --harmony babel.app.js"
+    "start": "node --harmony babel.app.js",
+    "debug": "node-inspector &\n node --harmony --debug babel.app.js"
   },
   "keywords": [
     "koa2",
