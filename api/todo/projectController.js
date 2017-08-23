@@ -18,7 +18,8 @@ class ProjectController extends BasicController {
     // 数据库操作参数准备
     var sql = {
       sql: 'SELECT A.* from project A, `user-project-rel` B WHERE B.userId = ? AND B.projectId = ? AND B.projectId = A.projectId',
-      values: [userId, projectId]
+      values: [userId, projectId],
+      options: ctx.query
     };
     // 数据库操作
     await BasicController.simpleQuery(ctx, sql);
@@ -32,7 +33,8 @@ class ProjectController extends BasicController {
     // 数据库操作参数准备
     var sql = {
       sql: 'SELECT A.* from project A, `user-project-rel` B WHERE B.userId = ? AND B.projectId = A.projectId',
-      values: userId
+      values: userId,
+      options: ctx.query
     };
     // 数据库操作
     await BasicController.simpleQuery(ctx, sql);
@@ -43,14 +45,15 @@ class ProjectController extends BasicController {
     console.log("ProjectController.create execute");
     // 解析请求参数
     const [userId] = BasicController.validation(ctx, ['userId']);
-    const {projectName, projectDescribe} = ctx.request.body;
+    const {projectName, projectDescribe, isDelete='F'} = ctx.request.body;
 
     // 参数准备
     var id = new Date().getTime();
     var newProject = {
       projectId: id,
       projectName: projectName,
-      projectDescribe: projectDescribe
+      projectDescribe: projectDescribe,
+      isDelete: isDelete
     };
 
     var newRel = {
@@ -77,12 +80,13 @@ class ProjectController extends BasicController {
     console.log("ProjectController.update execute");
     // 解析请求参数
     const [userId, projectId] = BasicController.validation(ctx, ['userId', 'projectId']);
-    const {projectName, projectDescribe} = ctx.request.body;
+    const {projectName, projectDescribe, isDelete} = ctx.request.body;
     // 参数准备
     var updateProject = {
       projectId: projectId,
       projectName: projectName,
-      projectDescribe: projectDescribe
+      projectDescribe: projectDescribe,
+      isDelete: isDelete
     };
     var sqlsInTransaction = [
       {
@@ -108,10 +112,13 @@ class ProjectController extends BasicController {
       sql: "DELETE FROM `user-project-rel` WHERE projectId=? AND userId=? ;",
       values: [projectId, userId]
     },{
+      sql: "DELETE FROM `todo-project-rel` WHERE projectId=?",
+      values: [projectId]
+    },{
       sql: "DELETE FROM project WHERE projectId=? ;",
       values: projectId
     }];
-    await BasicController.twoStagesDelete(ctx, sqlsInTransaction);
+    await BasicController.threeStagesDelete(ctx, sqlsInTransaction);
   }
 };
 

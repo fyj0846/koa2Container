@@ -43,14 +43,15 @@ class TagController extends BasicController {
     console.log("TagController.create execute");
     // 解析请求参数
     const [userId] = BasicController.validation(ctx, ['userId']);
-    const {tagName, tagDescribe} = ctx.request.body;
+    const {tagName, tagDescribe, isDelete="F"} = ctx.request.body;
 
     // 参数准备
     var id = new Date().getTime();
     var newTag = {
       tagId: id,
       tagName: tagName,
-      tagDescribe: tagDescribe
+      tagDescribe: tagDescribe,
+      isDelete: isDelete
     };
 
     var newRel = {
@@ -77,12 +78,13 @@ class TagController extends BasicController {
     console.log("TagController.update execute");
     // 解析请求参数
     const [userId, tagId] = BasicController.validation(ctx, ['userId', 'tagId']);
-    const {tagName, tagDescribe} = ctx.request.body;
+    const {tagName, tagDescribe, isDelete} = ctx.request.body;
     // 参数准备
     var updateTag = {
       tagId: tagId,
       tagName: tagName,
-      tagDescribe: tagDescribe
+      tagDescribe: tagDescribe,
+      isDelete: isDelete
     };
     var sqlsInTransaction = [
       {
@@ -108,10 +110,13 @@ class TagController extends BasicController {
       sql: "DELETE FROM `user-tag-rel` WHERE tagId=? AND userId=? ;",
       values: [tagId, userId]
     },{
+      sql: "DELETE FROM `todo-tag-rel` WHERE tagId=?",
+      values: [tagId]
+    },{
       sql: "DELETE FROM tag WHERE tagId=? ;",
       values: tagId
     }];
-    await BasicController.twoStagesDelete(ctx, sqlsInTransaction);
+    await BasicController.threeStagesDelete(ctx, sqlsInTransaction);
   }
 };
 

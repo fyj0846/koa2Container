@@ -17,12 +17,15 @@ class TodoController extends BasicController {
     // 解析请求参数
     const [userId, todoId] = BasicController.validation(ctx, ['userId', 'todoId']);
     // 数据库操作参数准备
+    // 取todo信息需要关联相关的所有表
     var sql = {
-      sql: 'SELECT A.* from todo A, `user-todo-rel` B WHERE B.userId = ? AND B.todoId = ? AND B.todoId = A.todoId;',
-      values: [userId, todoId]
+      sql: "SELECT T.*, P.projectName, P.projectId, TAG.tagName, TAG.tagId, S.sceneName, S.sceneId from todo T,  `user-todo-rel` UT, `todo-project-rel` TP, project P, `todo-tag-rel` TT, tag TAG, `todo-scene-rel` TS , scene S " +
+           "WHERE UT.userId=? AND UT.todoId=? AND UT.todoId=T.todoId AND UT.todoId=TP.todoId AND TP.projectId=P.projectId AND UT.todoId=TT.todoId AND TT.tagId=TAG.tagId AND UT.todoId=TS.todoId AND TS.sceneId=S.sceneId;",
+      values: [userId, todoId],
+      options: ctx.query
     };
     // 数据库操作
-    await BasicController.simpleQuery(ctx, sql);
+    await BasicController.simpleQuery(ctx, sql, "T");
   }
 
   // 根据userId， 查询todos
@@ -32,11 +35,14 @@ class TodoController extends BasicController {
     const [userId] = BasicController.validation(ctx, ['userId']);
     // 数据库操作参数准备
     var sql = {
-      sql: 'SELECT A.* from todo A, `user-todo-rel` B WHERE B.userId = ? AND B.todoId = A.todoId',
-      values: userId
+      // sql: 'SELECT A.* from todo A, `user-todo-rel` B WHERE B.userId = ? AND B.todoId = A.todoId',
+      sql: "SELECT T.*, P.projectName, P.projectId, TAG.tagName, TAG.tagId, S.sceneName, S.sceneId from todo T,  `user-todo-rel` UT, `todo-project-rel` TP, project P, `todo-tag-rel` TT, tag TAG, `todo-scene-rel` TS , scene S "+
+           "WHERE UT.userId=? AND UT.todoId=T.todoId AND UT.todoId=TP.todoId AND TP.projectId=P.projectId AND UT.todoId=TT.todoId AND TT.tagId=TAG.tagId AND UT.todoId=TS.todoId AND TS.sceneId=S.sceneId;",
+      values: userId,
+      options: ctx.query
     };
     // 数据库操作
-    await BasicController.simpleQuery(ctx, sql);
+    await BasicController.simpleQuery(ctx, sql, "T");
   }
 
   // curl -l -H "Content-type: application/json" -X POST -d '{"todoTitle":"newAddTodo3","expectFinishTime":"2017-09-21 17:00:00","expectClock":"1","priority":"4", "comment":"an comment3"}' http://localhost:8080/api/V1/todo/1

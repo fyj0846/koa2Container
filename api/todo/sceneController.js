@@ -18,7 +18,8 @@ class SceneController extends BasicController {
     // 数据库操作参数准备
     var sql = {
       sql: 'SELECT A.* from scene A, `user-scene-rel` B WHERE B.userId = ? AND B.sceneId = ? AND B.sceneId = A.sceneId',
-      values: [userId, sceneId]
+      values: [userId, sceneId],
+      options: ctx.query
     };
     // 数据库操作
     await BasicController.simpleQuery(ctx, sql);
@@ -32,7 +33,8 @@ class SceneController extends BasicController {
     // 数据库操作参数准备
     var sql = {
       sql: 'SELECT A.* from scene A, `user-scene-rel` B WHERE B.userId = ? AND B.sceneId = A.sceneId',
-      values: userId
+      values: userId,
+      options: ctx.query
     };
     // 数据库操作
     await BasicController.simpleQuery(ctx, sql);
@@ -43,14 +45,15 @@ class SceneController extends BasicController {
     console.log("SceneController.create execute");
     // 解析请求参数
     const [userId] = BasicController.validation(ctx, ['userId']);
-    const {sceneName, sceneDescribe} = ctx.request.body;
+    const {sceneName, sceneDescribe, isDelete='F'} = ctx.request.body;
 
     // 参数准备
     var id = new Date().getTime();
     var newScene = {
       sceneId: id,
       sceneName: sceneName,
-      sceneDescribe: sceneDescribe
+      sceneDescribe: sceneDescribe,
+      isDelete: isDelete
     };
 
     var newRel = {
@@ -77,12 +80,13 @@ class SceneController extends BasicController {
     console.log("SceneController.update execute");
     // 解析请求参数
     const [userId, sceneId] = BasicController.validation(ctx, ['userId', 'sceneId']);
-    const {sceneName, sceneDescribe} = ctx.request.body;
+    const {sceneName, sceneDescribe, isDelete} = ctx.request.body;
     // 参数准备
     var updateScene = {
       sceneId: sceneId,
       sceneName: sceneName,
-      sceneDescribe: sceneDescribe
+      sceneDescribe: sceneDescribe,
+      isDelete: isDelete
     };
     var sqlsInTransaction = [
       {
@@ -108,10 +112,13 @@ class SceneController extends BasicController {
       sql: "DELETE FROM `user-scene-rel` WHERE sceneId=? AND userId=? ;",
       values: [sceneId, userId]
     },{
+      sql: "DELETE FROM `todo-scene-rel` WHERE sceneId=?",
+      values: [sceneId]
+    },{
       sql: "DELETE FROM scene WHERE sceneId=? ;",
       values: sceneId
     }];
-    await BasicController.twoStagesDelete(ctx, sqlsInTransaction);
+    await BasicController.threeStagesDelete(ctx, sqlsInTransaction);
   }
 };
 
