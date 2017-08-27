@@ -31,7 +31,7 @@ class BasicController {
   // 动态查询条件/排序条件扩展
   static dynamicSql(sql, reject, table) {
     var options = Object.assign({}, {"F_isDelete": "F"}, sql.options);  //默认查询未删除的记录
-    var prefix = table || "";
+    var prefix = table ? (table + ".") : "";
     var filters = [];
     var orders = [];
     if (!sql || !sql.sql) {
@@ -41,10 +41,10 @@ class BasicController {
     for (var p in options) {
       var p_list = p.split("_");
       if (p_list[0] === 'F') {
-        filters.push({'column': prefix + "." + p_list[1], 'filterCnd': options[p]});
+        filters.push({'column': prefix + p_list[1], 'filterCnd': options[p]});
       }
       else if (p_list[0] === 'O') {
-        orders.push({'column': prefix + "." + p_list[1], 'orderType': options[p]});
+        orders.push({'column': prefix + p_list[1], 'orderType': options[p]});
       }
     }
 
