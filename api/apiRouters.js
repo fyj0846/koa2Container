@@ -15,9 +15,9 @@ apiRouters
   .get('/todo/:userId', todoCtrl.getTodosByUserId)
   /* todo新增： 新增todo（返回结构中包含affectedId，为动态生成的新todoId） */
   .post('/todo/:userId', todoCtrl.createTodo)
-  /* todo更新： 根据用户Id和todoId更新 */
+  /* todo更新： 根据用户Id和todoId更新，通过更新isDelete字段实现软删除 */
   .put('/todo/:userId/:todoId', todoCtrl.updateTodoByTodoId)
-  /* todo删除： 根据用户Id和todoId删除 */
+  /* todo删除： 根据用户Id和todoId删除，硬删除*/
   .delete('/todo/:userId/:todoId', todoCtrl.deleteTodoByTodoId)
 
   /* project功能 */

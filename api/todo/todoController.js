@@ -50,7 +50,7 @@ class TodoController extends BasicController {
     console.log("TodoController.create execute");
     // 解析请求参数
     const [userId] = BasicController.validation(ctx, ['userId']);
-    const {todoTitle, priority, expectClock, expectFinishTime, comment} = ctx.request.body;
+    const {todoTitle, priority, expectClock, expectFinishTime, comment, projectId, sceneId, tagId} = ctx.request.body;
     // 参数准备
     var id = new Date().getTime();
     var newTodo = {
@@ -70,14 +70,30 @@ class TodoController extends BasicController {
       userId: userId
     };
 
+    var projectRel = {
+      todoId: id,
+      projectId: projectId
+    }
+
+    var sceneRel = {
+      todoId: id,
+      sceneId: sceneId,
+    }
+
+    var tagRel = {
+      todoId: id,
+      tagId: tagId
+    }
+
+    // 创建新todo时需要同步更新多个关联表
     var sqlsInTransaction = [
       {
         sql: "insert into todo set ? ;",
         values: newTodo,
         affectedId: 'todoId'
       }, {
-        sql: "insert into `user-todo-rel` set ? ;",
-        values: newRel
+        sql: "insert into `user-todo-rel` set ? ; insert into `todo-project-rel` set ?; insert into  `todo-scene-rel` set ?; insert into `todo-tag-rel` set ?;",
+        values: [newRel, projectRel, sceneRel, tagRel]
       }
     ];
     // 等待数据库操作
@@ -124,8 +140,8 @@ class TodoController extends BasicController {
     const [userId, todoId] = BasicController.validation(ctx, ['userId', 'todoId']);
     // 等待数据库操作
     var sqlsInTransaction = [{
-      sql: "DELETE FROM `user-todo-rel` WHERE todoId=? AND userId=? ;",
-      values: [todoId, userId]
+      sql: "DELETE FROM `user-todo-rel` WHERE todoId=? AND userId=? ; DELETE From  `todo-project-rel` WHERE todoId=?; DELETE from `todo-scene-rel` where todoId=?; DELETE from `todo-tag-rel` where todoId=?;",
+      values: [todoId, userId, todoId, todoId, todoId]
     },{
       sql: "DELETE FROM todo WHERE todoId=? ;",
       values: todoId
