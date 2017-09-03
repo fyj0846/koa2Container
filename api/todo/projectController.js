@@ -34,7 +34,7 @@ class ProjectController extends BasicController {
     var sql = {
       sql: 'SELECT A.* from project A, `user-project-rel` B WHERE B.userId = ? AND B.projectId = A.projectId',
       values: userId,
-      options: ctx.query
+      options: ctx.query  //T,F,ALL
     };
     // 数据库操作
     await BasicController.simpleQuery(ctx, sql);

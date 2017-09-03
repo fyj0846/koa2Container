@@ -50,7 +50,7 @@ class TodoController extends BasicController {
     console.log("TodoController.create execute");
     // 解析请求参数
     const [userId] = BasicController.validation(ctx, ['userId']);
-    const {todoTitle, priority, expectClock, expectFinishTime, comment, projectId, sceneId, tagId} = ctx.request.body;
+    const {todoTitle, priority, expectClock, expectFinishTime, todoDescribe, projectId, sceneId, tagId} = ctx.request.body;
     // 参数准备
     var id = new Date().getTime();
     var newTodo = {
@@ -60,7 +60,7 @@ class TodoController extends BasicController {
       cTime: new Date(),
       expectFinishTime: expectFinishTime,
       expectClock: expectClock,
-      comment: comment,
+      todoDescribe: todoDescribe,
       isFinished: 'F',  // 固定设置， F/T
       isDelete: "F"     // 固定设置， F/T
     };
@@ -105,7 +105,7 @@ class TodoController extends BasicController {
     console.log("TodoController.update execute");
     // 解析请求参数
     const [userId, todoId] = BasicController.validation(ctx, ['userId', 'todoId']);
-    const {todoTitle, priority, cTime, expectClock, expectFinishTime, comment, isFinished, isDelete} = ctx.request.body;
+    const {todoTitle, priority, todoDescribe, cTime, expectClock, expectFinishTime, isFinished, isDelete} = ctx.request.body;
     // 参数准备
     var updateTodo = {
       todoId: todoId,
@@ -114,7 +114,7 @@ class TodoController extends BasicController {
       cTime: cTime,
       expectFinishTime: expectFinishTime,
       expectClock: expectClock,
-      comment: comment,
+      todoDescribe: todoDescribe,
       isFinished: isFinished,  // 固定设置， F/T
       isDelete: isDelete    // 固定设置， F/T
     };

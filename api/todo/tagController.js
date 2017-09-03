@@ -18,7 +18,8 @@ class TagController extends BasicController {
     // 数据库操作参数准备
     var sql = {
       sql: 'SELECT A.* from tag A, `user-tag-rel` B WHERE B.userId = ? AND B.tagId = ? AND B.tagId = A.tagId',
-      values: [userId, tagId]
+      values: [userId, tagId],
+      options: ctx.query
     };
     // 数据库操作
     await BasicController.simpleQuery(ctx, sql);
@@ -32,7 +33,8 @@ class TagController extends BasicController {
     // 数据库操作参数准备
     var sql = {
       sql: 'SELECT A.* from tag A, `user-tag-rel` B WHERE B.userId = ? AND B.tagId = A.tagId',
-      values: userId
+      values: userId,
+      options: ctx.query
     };
     // 数据库操作
     await BasicController.simpleQuery(ctx, sql);

@@ -2,6 +2,7 @@
 import Koa from 'koa';
 import path from 'path';
 import serve from 'koa-static';
+import cors from 'koa-cors';
 import bodyParser from 'koa-bodyparser';
 import Router from 'koa-router';
 import home from './routes/homeRoutes';
@@ -21,6 +22,8 @@ router.use('/api/V1', apiRouter.routes(), apiRouter.allowedMethods());
 // trust proxy
 app.proxy = true;
 
+// 跨域支持
+app.use(cors());
 // 请求解析
 app.use(bodyParser());
 

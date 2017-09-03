@@ -56,14 +56,17 @@ class BasicController {
       if (i == 0 && sql.sql.toUpperCase().indexOf("WHERE") < 0) {
         sql.sql += " WHERE 1=1 ";
       }
-      sql.sql += " AND " + filters[i]['column'] + "='" + filters[i]['filterCnd'] + "'";
+      // 如果为"ALL",则忽略该条件
+      if(filters[i]['filterCnd'] != 'ALL') {
+        sql.sql += " AND " + filters[i]['column'] + "='" + filters[i]['filterCnd'] + "'";
+      }
     }
     // 扩展ORDER BY条件
     if (orders.length > 0) {
       sql.sql += " ORDER BY " + orders[0]['column'] + " " + orders[0]['orderType'];
     }
     sql.sql += ";";
-    // console.log(sql.sql);
+    console.log(sql.sql);
   }
 
   // 对象空属性处理，实现部分字段更新
