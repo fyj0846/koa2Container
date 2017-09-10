@@ -57,12 +57,15 @@ class TodoController extends BasicController {
       todoId: id,
       todoTitle: todoTitle,
       priority: priority,
-      cTime: new Date(),
+      cTime: BasicController.getNowFormatDate(),
       expectFinishTime: expectFinishTime,
       expectClock: expectClock,
       todoDescribe: todoDescribe,
       isFinished: 'F',  // 固定设置， F/T
-      isDelete: "F"     // 固定设置， F/T
+      isDelete: "F",     // 固定设置， F/T
+      spentClock: 0,
+      satisfiyDegree: 0,
+      score: 0
     };
 
     var newRel = {
@@ -105,19 +108,32 @@ class TodoController extends BasicController {
     console.log("TodoController.update execute");
     // 解析请求参数
     const [userId, todoId] = BasicController.validation(ctx, ['userId', 'todoId']);
-    const {todoTitle, priority, todoDescribe, cTime, expectClock, expectFinishTime, isFinished, isDelete, projectId, sceneId, tagId} = ctx.request.body;
+    const {todoTitle, priority, todoDescribe, expectClock, expectFinishTime, isFinished, isDelete, spentClock, satisfiyDegree, score, projectId, sceneId, tagId} = ctx.request.body;
     // 参数准备
     var updateTodo = {
       todoId: todoId,
       todoTitle: todoTitle,
       priority: priority,
-      cTime: cTime,
+      // cTime: cTime,
       expectFinishTime: expectFinishTime,
       expectClock: expectClock,
       todoDescribe: todoDescribe,
-      isFinished: isFinished,  // 固定设置， F/T
-      isDelete: isDelete    // 固定设置， F/T
+      spentClock: spentClock,
     };
+
+    // 更新完成字段
+    if(isFinished && isFinished == 'T') {
+      updateTodo.finishTime = BasicController.getNowFormatDate();
+      updateTodo.satisfiyDegree = satisfiyDegree;
+      updateTodo.score = score;
+      updateTodo.isFinished = isFinished; // 固定设置， F/T
+    }
+    // 更新删除字段
+    if(isDelete && isDelete == 'T') {
+      console.log("isDelete: " , isDelete);
+      updateTodo.deleteTime = BasicController.getNowFormatDate();
+      updateTodo.isDelete = isDelete;
+    }
 
     var projectRel = {
       todoId: todoId,
