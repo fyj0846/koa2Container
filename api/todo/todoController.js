@@ -105,7 +105,7 @@ class TodoController extends BasicController {
     console.log("TodoController.update execute");
     // 解析请求参数
     const [userId, todoId] = BasicController.validation(ctx, ['userId', 'todoId']);
-    const {todoTitle, priority, todoDescribe, cTime, expectClock, expectFinishTime, isFinished, isDelete} = ctx.request.body;
+    const {todoTitle, priority, todoDescribe, cTime, expectClock, expectFinishTime, isFinished, isDelete, projectId, sceneId, tagId} = ctx.request.body;
     // 参数准备
     var updateTodo = {
       todoId: todoId,
@@ -119,14 +119,29 @@ class TodoController extends BasicController {
       isDelete: isDelete    // 固定设置， F/T
     };
 
+    var projectRel = {
+      todoId: todoId,
+      projectId: projectId,
+    }
+
+    var sceneRel = {
+      todoId: todoId,
+      sceneId: sceneId,
+    }
+
+    var tagRel = {
+      todoId: todoId,
+      tagId: tagId,
+    }
+
     var sqlsInTransaction = [
       {
         sql: "select count(*) as count from todo A, `user-todo-rel` B where B.todoId = ? AND B.userId = ? AND A.todoId=B.todoId;",
         values: [todoId, userId],
         existFlag: 'count'
       }, {
-        sql: "UPDATE todo  SET ? WHERE todoId=?;",
-        values: [updateTodo, todoId]
+        sql: "UPDATE todo  SET ? WHERE todoId=?; UPDATE `todo-project-rel`  SET ? WHERE todoId=?; UPDATE `todo-scene-rel`  SET ? WHERE todoId=?; UPDATE `todo-tag-rel`  SET ? WHERE todoId=?;",
+        values: [updateTodo, todoId, projectRel, todoId, sceneRel, todoId, tagRel, todoId]
       }
     ];
     // 等待数据库操作
