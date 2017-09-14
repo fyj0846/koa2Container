@@ -34,10 +34,10 @@ apiRouters
   .put('/scene/:userId/:sceneId', sceneCtrl.updateSceneBySceneId)
   .delete('/scene/:userId/:sceneId', sceneCtrl.deleteSceneBySceneId)
 
-  /* tag功能 */
-  .get('/tag/:userId/:tagId', tagCtrl.getTagByTagId)
-  .get('/tag/:userId', tagCtrl.getTagsByUserId)
-  .post('/tag/:userId', tagCtrl.createTag)
-  .put('/tag/:userId/:tagId', tagCtrl.updateTagByTagId)
-  .delete('/tag/:userId/:tagId', tagCtrl.deleteTagByTagId)
+  // /* tag功能 */
+  // .get('/tag/:userId/:tagId', tagCtrl.getTagByTagId)
+  // .get('/tag/:userId', tagCtrl.getTagsByUserId)
+  // .post('/tag/:userId', tagCtrl.createTag)
+  // .put('/tag/:userId/:tagId', tagCtrl.updateTagByTagId)
+  // .delete('/tag/:userId/:tagId', tagCtrl.deleteTagByTagId)
 export default apiRouters;

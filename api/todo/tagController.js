@@ -56,9 +56,9 @@ class TagController extends BasicController {
       isDelete: isDelete
     };
 
-    var newRel = {
-      tagId: id,
-      userId: userId
+    var newUserTagRel = {
+      userId: userId,
+      tagId: id
     };
 
     var sqlsInTransaction = [
@@ -68,7 +68,7 @@ class TagController extends BasicController {
         affectedId: 'tagId'
       }, {
         sql: "INSERT INTO `user-tag-rel` SET ? ;",
-        values: newRel
+        values: [newUserTagRel]
       }
     ];
     // 等待数据库操作
