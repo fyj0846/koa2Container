@@ -430,27 +430,31 @@ class BasicController {
     })
   }
 
-  static toDouble (t) {
+  // 时间转换工具
+  static padDouble (t) {
     var num = t;
     if(typeof t == 'string') {
       num = parseInt(t);
     }
-    if(num >= 1 && num <= 9) {
+    if(num >= 0 && num <= 9) {
       num = '0' + num;
     }
     return num + '';
   }
-
-  static getNowFormatDate(daySep, hourSep) {
+  // 时间转换工具
+  static getLocalDateString(str, daySep, hourSep) {
     var date = new Date();
+    if(str) {
+      date = new Date(str);
+    }
     var s1 = daySep || "-";
     var s2 = hourSep || ":";
     var year = date.getFullYear();
-    var month = BasicController.toDouble(date.getMonth() + 1);
-    var day = BasicController.toDouble(date.getDate());
-    var hour = BasicController.toDouble(date.getHours());
-    var minute = BasicController.toDouble(date.getMinutes());
-    var second = BasicController.toDouble(date.getSeconds());
+    var month = BasicController.padDouble(date.getMonth() + 1);
+    var day = BasicController.padDouble(date.getDate());
+    var hour = BasicController.padDouble(date.getHours());
+    var minute = BasicController.padDouble(date.getMinutes());
+    var second = BasicController.padDouble(date.getSeconds());
 
     return  year + s1 + month + s1 + day + " " + hour + s2 + minute + s2 + second;
   }

@@ -57,7 +57,7 @@ class TodoController extends BasicController {
       todoId: id,
       todoTitle: todoTitle,
       priority: priority,
-      cTime: BasicController.getNowFormatDate(),
+      cTime:  new Date(), //BasicController.getLocalDateString(),
       expectFinishTime: expectFinishTime,
       expectClock: expectClock,
       todoDescribe: todoDescribe,
@@ -120,7 +120,7 @@ class TodoController extends BasicController {
 
     // 更新完成字段
     if(isFinished && isFinished == 'T') {
-      updateTodo.finishTime = BasicController.getNowFormatDate();
+      updateTodo.finishTime = BasicController.getLocalDateString();  // update不能直接使用new Date()作为参数值
       updateTodo.satisfiyDegree = satisfiyDegree;
       updateTodo.score = score;
       updateTodo.isFinished = isFinished; // 固定设置， F/T
@@ -128,7 +128,7 @@ class TodoController extends BasicController {
     // 更新删除字段
     if(isDelete && isDelete == 'T') {
       console.log("isDelete: " , isDelete);
-      updateTodo.deleteTime = BasicController.getNowFormatDate();
+      updateTodo.deleteTime = BasicController.getLocalDateString();
       updateTodo.isDelete = isDelete;
     }
 
