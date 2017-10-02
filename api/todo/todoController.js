@@ -57,7 +57,7 @@ class TodoController extends BasicController {
       todoId: id,
       todoTitle: todoTitle,
       priority: priority,
-      cTime:  new Date(), //BasicController.getLocalDateString(),
+      cTime:  BasicController.getLocalDateString(),
       expectFinishTime: expectFinishTime,
       expectClock: expectClock,
       todoDescribe: todoDescribe,

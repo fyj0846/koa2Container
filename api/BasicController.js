@@ -108,6 +108,9 @@ class BasicController {
     return new Promise((resolve, reject) => {
       BasicController.dynamicSql(sql, reject,table);  // 实现有限的查询条件和排序条件动态扩展
       BasicController.pool.getConnection(function (error, connection) {
+        if(!connection) {
+          reject(new restError('-1', 'db connection error!'));
+        }
         connection.query({
           sql: sql.sql,
           timeout: sql.timeout || 8000,
@@ -126,6 +129,70 @@ class BasicController {
           }
           // 结束会话
           connection.release();
+        });
+      });
+    });
+  }
+
+  /* 数据库操作： 排他性新增*/
+  static async uniqueCreate(ctx, sqls) {
+    return new Promise((resolve, reject) => {
+      BasicController.pool.getConnection(function (error, connection) {
+        connection.beginTransaction(function (error) {
+          if (error) {
+            // 请求异常
+            console.log(error);
+            return connection.rollback(function () {
+              reject(new restError(error.code, error.message));
+            });
+          }
+          var query = connection.query({
+            sql: sqls[0].sql,
+            timeout: sqls[0].timeout || 8000,
+            values: sqls[0].values
+          }, (error, results, fields) => {
+            if (error) {
+              // 请求异常
+              console.log(error);
+              return connection.rollback(function () {
+                reject(new restError(error.code, error.message));
+              });
+            }
+            console.log(query.sql);
+            // 此处判断记录数是否符合期望
+            if (!results || results.length > 0) {
+              return reject(new restError('Z01', '记录已存在，请重试'));
+            }
+            var query2 = connection.query({
+              sql: sqls[1].sql,
+              timeout: sqls[1].timeout || 8000,
+              values: BasicController.removeNullProperty(sqls[1].values) //实现部分字段更新
+            }, (error, results, fields) => {
+              if (error) {
+                // 请求异常
+                console.log(error);
+                return connection.rollback(function () {
+                  reject(new restError(error.code, error.message));
+                });
+              }
+              console.log(query2.sql);
+              connection.commit(function (error) {
+                if (error) {
+                  return connection.rollback(function () {
+                    reject(new restError(error.code, error.message));
+                  });
+                }
+                console.log('success!');
+                ctx.rest({
+                  status: 'SUCCESS',
+                  resultSet: results
+                });
+                resolve();
+                // 释放连接
+                connection.release();
+              });
+            });
+          });
         });
       });
     });

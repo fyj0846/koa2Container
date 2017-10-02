@@ -1,10 +1,11 @@
 /* koa2 REST-ful 服务路由配置 */
 
 import Router from 'koa-router';
+import userCtrl from './todo/userController';   // 引入user逻辑层
 import todoCtrl from './todo/todoController';   // 引入todo模块逻辑层
 import projectCtrl from './todo/projectController';   // 引入project模块逻辑层
 import sceneCtrl from './todo/sceneController';   // 引入scene模块逻辑
-import tagCtrl from './todo/tagController';   // 引入tag模块逻辑
+// import tagCtrl from './todo/tagController';   // 引入tag模块逻辑
 const apiRouters = new Router();
 
 apiRouters
@@ -40,4 +41,8 @@ apiRouters
   // .post('/tag/:userId', tagCtrl.createTag)
   // .put('/tag/:userId/:tagId', tagCtrl.updateTagByTagId)
   // .delete('/tag/:userId/:tagId', tagCtrl.deleteTagByTagId)
+
+  /* 用户功能 */
+  .post('/user/login', userCtrl.userLogin)
+  .post('/user/registry', userCtrl.userRegistry)
 export default apiRouters;
