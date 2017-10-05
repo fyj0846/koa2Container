@@ -66,7 +66,8 @@ class TodoController extends BasicController {
       isDelete: "F",     // 固定设置， F/T
       spentClock: 0,
       satisfiyDegree: 0,
-      score: 0
+      score: 0,
+      clockElapse: 0,  //当前任务番茄钟流逝时间
     };
 
     var newRel = {
@@ -104,7 +105,7 @@ class TodoController extends BasicController {
     console.log("TodoController.update execute");
     // 解析请求参数
     const [userId, todoId] = BasicController.validation(ctx, ['userId', 'todoId']);
-    const {todoTitle, priority, todoDescribe, expectClock, expectFinishTime, tags, isFinished, isDelete, spentClock, satisfiyDegree, score, projectId, sceneId} = ctx.request.body;
+    const {todoTitle, priority, todoDescribe, expectClock, expectFinishTime, tags, isFinished, isDelete, spentClock, satisfiyDegree, score, clockElapse, projectId, sceneId} = ctx.request.body;
     // 参数准备
     var updateTodo = {
       todoId: todoId,
@@ -116,6 +117,7 @@ class TodoController extends BasicController {
       expectClock: expectClock,
       todoDescribe: todoDescribe,
       spentClock: spentClock,
+      clockElapse: clockElapse,
     };
 
     // 更新完成字段
