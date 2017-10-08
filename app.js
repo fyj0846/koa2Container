@@ -8,6 +8,7 @@ import Router from 'koa-router';
 import home from './routes/homeRoutes';
 import apiRouter from './api/apiRouters';
 import restify from './middlewares/restify';
+import logger from './middlewares/logger';  // 引入日志中间件
 
 // 初始化app对象
 var app = new Koa();
@@ -30,6 +31,9 @@ app.use(bodyParser());
 // 静态资源解析
 app.use(serve(path.resolve()));
 
+// 统一日志处理
+app.use(logger());
+
 // 统一的数据返回处理和异常处理
 app.use(restify());
 
@@ -39,7 +43,7 @@ app.use(router.routes())
 
 // 启动应用，并监听8080端口
 app.listen(8080);
-console.log('Listening on http://localhost:8080');
+console.log('Listening on port 8080');
 
 // 下面是Koa测试代码
 // 1、koa-router

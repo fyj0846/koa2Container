@@ -1,7 +1,7 @@
 /**
  * Created by qiujian on 7/22/17.
  */
-var type = "PRODUCTION";
+var type = "PRODUCT";
 var dbCfg = {};
 
 const test_dbCfg = {
